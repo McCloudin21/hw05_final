@@ -1,6 +1,5 @@
-from django.db import models
-
 from django.contrib.auth import get_user_model
+from django.db import models
 
 from core.models import CreatedModel
 
@@ -26,7 +25,10 @@ class Group(models.Model):
 
 
 class Post(CreatedModel):
+    TEXT_LENGHT = 15
+
     text = models.TextField(
+        max_length=int(TEXT_LENGHT),
         verbose_name='Текст поста',
         help_text='Напишите сюда текст',
     )
@@ -56,7 +58,7 @@ class Post(CreatedModel):
     )
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:self.TEXT_LENGHT]
 
     class Meta:
         ordering = ['-pub_date']
@@ -67,7 +69,7 @@ class Comment(CreatedModel):
         Post,
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='comments',
     )
     author = models.ForeignKey(

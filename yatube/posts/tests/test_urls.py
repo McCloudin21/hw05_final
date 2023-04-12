@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
-from http import HTTPStatus
-from django.test import (TestCase,
-                         Client,
+from django.test import (Client,
+                         TestCase
                          )
+from http import HTTPStatus
 
-from ..models import (Post,
-                      Group,
+from ..models import (Group,
+                      Post,
                       )
 
 
@@ -68,12 +68,12 @@ class PostURLTests(TestCase):
     def test_unexisting_page(self):
         """Тестирование несуществующей страницы"""
         response = self.guest_client.get('/unexisting_page/')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_create_page(self):
         """Страница /create/ доступна авторизованному пользователю."""
         response = self.authorized_client.get('/create/', follow=True,)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_create_page_redirect_guest_user(self):
         """Страница /create/ перенаправляет анонимного пользователя."""

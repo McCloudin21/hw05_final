@@ -1,16 +1,27 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import (get_object_or_404,
+                              redirect,
+                              render,
+                              )
 
-from .models import Post, Group, User, Comment, Follow
-from .forms import PostForm, CommentForm
+
+from .models import (Comment,
+                     Follow,
+                     Group,
+                     Post,
+                     User,
+                     )
+from .forms import (CommentForm,
+                    PostForm,
+                    )
 
 
 POSTS_ON_PAGE = 10
 
 
 def index(request):
-    post_list = Post.objects.select_related('author').all()
+    post_list = Post.objects.all()
     paginator = Paginator(post_list, POSTS_ON_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -41,12 +52,14 @@ def profile(request, username):
     paginator = Paginator(author.posts.all(), POSTS_ON_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    following = author.following.exists()
 
     context = {
         'author': author,
         'title': title,
         'posts_count': posts_count,
         'page_obj': page_obj,
+        'following': following,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -92,6 +105,8 @@ def post_edit(request, post_id):
                     files=request.FILES or None,
                     instance=post,
                     )
+    if post.author != request.user:
+        return redirect("posts:post_detail", post_id)
     if form.is_valid():
         post = form.save()
         return redirect('posts:post_detail', post_id)
