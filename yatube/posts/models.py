@@ -28,7 +28,6 @@ class Post(CreatedModel):
     TEXT_LENGHT = 15
 
     text = models.TextField(
-        max_length=int(TEXT_LENGHT),
         verbose_name='Текст поста',
         help_text='Напишите сюда текст',
     )
@@ -58,7 +57,7 @@ class Post(CreatedModel):
     )
 
     def __str__(self):
-        return self.text[:self.TEXT_LENGHT]
+        return self.text[:int(self.TEXT_LENGHT)]
 
     class Meta:
         ordering = ['-pub_date']

@@ -14,7 +14,16 @@ class PostForm(forms.ModelForm):
         group = forms.ModelChoiceField(queryset=Post.objects.all(),
                                        required=False, to_field_name='group')
         widgets = {
-            'text': forms.Textarea(),
+            'text': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'group': forms.Select(
+                attrs={
+                    'class': 'form-control',
+                }
+            )
         }
 
         labels = {
@@ -26,4 +35,5 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('text',)
+        fields = ('text',
+                  )

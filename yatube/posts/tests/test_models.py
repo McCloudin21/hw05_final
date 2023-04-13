@@ -28,9 +28,9 @@ class PostModelTest(TestCase):
         test_text = 'Тестовый произвольный пост'
         expected_name = Post.objects.create(author=self.user,
                                             text=test_text)
-        cropped_text = test_text[:Post.TEXT_LENGHT]
+        cropped_text = test_text[:15]
         self.assertEqual(str(expected_name), str(post))
-        self.assertEqual(len(cropped_text), len(str(post)))
+        self.assertEqual(cropped_text, str(post))
 
     def test_verbose_name(self):
         """verbose_name в полях совпадает с ожидаемым."""

@@ -84,11 +84,13 @@ def post_create(request):
                     files=request.FILES or None,
                     )
     title = 'Новый пост'
-    if form.is_valid():
-        post = form.save(commit=False)
-        post.author = request.user
-        post.save()
-        return redirect('posts:profile', request.user.username)
+    if request.method == 'POST':
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('posts:profile', username=request.user)
+    print(request.method == 'POST', form.is_valid())
     return render(request, 'posts/post_create.html', context={'form': form,
                                                               'title': title})
 
@@ -98,19 +100,17 @@ def post_edit(request, post_id):
     is_form_edit = True
     post = get_object_or_404(Post, id=post_id)
     title = 'Редактирование поста'
-    if post.author != request.user:
-        return redirect('posts:post_detail', post_id)
-
     form = PostForm(request.POST or None,
                     files=request.FILES or None,
                     instance=post,
                     )
     if post.author != request.user:
         return redirect("posts:post_detail", post_id)
-    if form.is_valid():
-        post = form.save()
-        return redirect('posts:post_detail', post_id)
-
+    if request.method == 'POST':
+        if form.is_valid():
+            post = form.save()
+            return redirect('posts:post_detail', post_id)
+    print(request.method == 'POST', form.is_valid())
     return render(request, 'posts/post_create.html',
                   context={'form': form,
                            'post': post,
