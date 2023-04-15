@@ -28,7 +28,7 @@ class PostModelTest(TestCase):
         test_text = 'Тестовый произвольный пост'
         expected_name = Post.objects.create(author=self.user,
                                             text=test_text)
-        cropped_text = test_text[:15]
+        cropped_text = test_text[:post.TEXT_LENGHT]
         self.assertEqual(str(expected_name), str(post))
         self.assertEqual(cropped_text, str(post))
 

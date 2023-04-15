@@ -6,22 +6,22 @@ from django.shortcuts import (get_object_or_404,
                               )
 
 
+from .forms import (CommentForm,
+                    PostForm,
+                    )
 from .models import (Comment,
                      Follow,
                      Group,
                      Post,
                      User,
                      )
-from .forms import (CommentForm,
-                    PostForm,
-                    )
 
 
 POSTS_ON_PAGE = 10
 
 
 def index(request):
-    post_list = Post.objects.all()
+    post_list = Post.objects.select_related('author', 'group').all()
     paginator = Paginator(post_list, POSTS_ON_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -90,7 +90,6 @@ def post_create(request):
             post.author = request.user
             post.save()
             return redirect('posts:profile', username=request.user)
-    print(request.method == 'POST', form.is_valid())
     return render(request, 'posts/post_create.html', context={'form': form,
                                                               'title': title})
 
@@ -110,7 +109,6 @@ def post_edit(request, post_id):
         if form.is_valid():
             post = form.save()
             return redirect('posts:post_detail', post_id)
-    print(request.method == 'POST', form.is_valid())
     return render(request, 'posts/post_create.html',
                   context={'form': form,
                            'post': post,

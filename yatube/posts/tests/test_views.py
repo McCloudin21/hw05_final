@@ -211,8 +211,8 @@ class PostPagesTests(TestCase):
         """Проверка кеша."""
         response = self.guest_client.get(reverse("posts:index"))
         Post.objects.get(id=1).delete()
-        response2 = self.guest_client.get(reverse("posts:index"))
-        self.assertEqual(response.content, response2.content)
+        new_response = self.guest_client.get(reverse("posts:index"))
+        self.assertEqual(response.content, new_response.content)
 
     def test_follow_page_clear(self):
         """Проверяем, что страница подписок пуста."""
